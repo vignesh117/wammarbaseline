@@ -1,0 +1,83 @@
+compiling Makefile-latentCrfPosTagger gives an error
+mpiCC -x c++ -std=c++11 -c /usr0/home/wammar/git/liblbfgs/lib/lbfgs.c -O3 -DNDEBUG
+g++: error: /usr0/home/wammar/git/liblbfgs/lib/lbfgs.c: No such file or directory
+g++: warning: ‘-x c++’ after last input file has no effect
+g++: fatal error: no input files
+compilation terminated.
+make: *** [lbfgs.o] Error 4
+
+Need to change the hardcoded path /usr0/home/wammar/git/liblbfgs/lib/lbfgs.c in the path
+
+-- Downloaded lbfgs and modified the makefile to point to the newpath - Working
+
+--------------------------------------------
+
+Got error with Eigen/Dense
+#include <Eigen/Dense>
+                       ^
+compilation terminated.
+make: *** [LatentCrfParser.o] Error 1
+
+Solution
+Apparently this library was changed to eigen3 sometime back. So setting up a soft link to that - didn't solve 
+
+FIX
+====
+installed libeigen3-dev
+and modified the imports in parsing/LatentCrfParser.h - changed #include <Eigen/Dense> to <eigen3/Eigen/Dense>
+
+
+---------------------------------
+
+./train-latentCrfPosTagger 
+./train-latentCrfPosTagger: error while loading shared libraries: libfst.so.1: cannot open shared object file: No such file or directory
+
+Solution
+Sounds like the loader isn't looking for libraries in /usr/local/lib. 
+Add that directory to your loader config in /etc/ld.so.conf* and run ldconfig.
+
+-------------------------------
+
+libraries not found
+tried to put all the header files in core and wammar-utils inside the main directory
+
+-----------------------------
+train-hmmPosTagger.cc:23:3: error: reference to ‘mpi’ is ambiguous
+
+FIXED
+======
+Made the following changes to train-hmmPosTagger
+- removed using namespace boost
+	- replaced it with namespace mpi = boost :: mpi;
+- Added the following 2 header files
+#include <boost/mpi/environment.hpp>
+#include <boost/mpi/communicator.hpp>
+
+
+-------------------------------
+
+train-hmmPosTagger.cc:51:16: error: no matching function for call to ‘LearningInfo::LearningInfo()’
+   LearningInfo learningInfo;
+                ^
+---------------------------------
+
+StringUtils.h:177:32: error: ‘std::map’ has not been declared
+                           std::map<int, string> &intToStringMap) {
+                                ^
+StringUtils.h:177:35: error: expected ‘,’ or ‘...’ before ‘<’ token
+                           std::map<int, string> &intToStringMap) {
+---------------------------------
+
+
+
+
+
+Compilation status 1/31 morning
+================================
+Makefile-hmmAligner -- getting unknown error
+Makefile-hmmPosTagger  -- Error with ambiguity in MPI - fixed, now getting error with LearningInfo
+Makefile-latentCrfAligner - SUCCESS
+Makefile-latenCrfParser - Fixed Eigen/Dense Error, now getting Error with ambiguity in MPI
+Makefile-latentCrfPosTagger - SUCCESS
+Makefile-model1 -- Error in StringUtils.h
+Makefile-reorderingSemiring - unknown error
