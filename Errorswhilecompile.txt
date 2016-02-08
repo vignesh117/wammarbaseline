@@ -48,7 +48,8 @@ FIXED
 ======
 Made the following changes to train-hmmPosTagger
 - removed using namespace boost
-	- replaced it with namespace mpi = boost :: mpi;
+	- replaced it with 
+namespace mpi = boost :: mpi;
 - Added the following 2 header files
 #include <boost/mpi/environment.hpp>
 #include <boost/mpi/communicator.hpp>
@@ -81,3 +82,16 @@ Makefile-latenCrfParser - Fixed Eigen/Dense Error, now getting Error with ambigu
 Makefile-latentCrfPosTagger - SUCCESS
 Makefile-model1 -- Error in StringUtils.h
 Makefile-reorderingSemiring - unknown error
+
+
+Update 02/07/2016
+------------------
+
+- Looks like Makefile-latentCrfParser is still in the works. I am going to abandon attempts to fix it
+- Makefile-latentCrfPosTagger works - experiment1
+- The readme file gives an example of how to run the experiments
+	- Basically we need only two things
+		- A text file with one sentence per line
+		- A text file containing word level features 
+			- Investigate the paper on what features they have used 
+- We have to try to look at the script to see what they have used to come up with features ( word level features)
